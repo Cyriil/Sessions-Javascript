@@ -1,0 +1,198 @@
+<style type="text/css">
+	body {background: #000;}
+	#conteneur {width: 400px;height: 300px;border: 1px solid #333;
+    			margin: 0 auto;background: #FFF;text-align: center;}
+	h1 {text-align: center;font-variant: small-caps;color: #FFF;}
+	p {text-align: center;font-variant: small-caps;color: #FFF;}
+</style>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+	// Constantes du jeu
+
+	// Largeur du jeu
+	var ZONE_JEU_WIDTH = 400;
+	// Hauteur du jeu
+	var ZONE_JEU_HEIGHT = 300;
+
+	// Variables
+	var context;
+	var boucleJeu;
+    var squareWidth = 10;
+    var squareHeight = 10;
+    var playerWidth = 10;
+    var playerHeight = 10;
+	var squareX = getRandomMinMax(0,(ZONE_JEU_WIDTH-squareWidth)/10)*10;
+    var squareY = getRandomMinMax(0,(ZONE_JEU_HEIGHT-squareHeight)/10)*10;
+    var score = 0;
+    var depla_gauche = false;
+    var depla_droite = true;
+    var depla_haut = false;
+    var depla_bas = false;
+    var player = new Square(ZONE_JEU_WIDTH/2,ZONE_JEU_HEIGHT/2);
+    var snake = new Snake(player);
+    
+    
+	window.addEventListener('load', function () {
+	    // On récupère l'objet canvas pour dessiner dedans
+	    context = document.getElementById('canvasElem').getContext('2d');
+
+	    // Boucle de rafraichissement du contexte 2D
+	    boucleJeu = setInterval(refreshGame, 200
+        );
+        window.document.onkeydown = deplacement;
+	}, false);
+    
+    function deplacement(e) {
+    	if(player.y >= 0 & player.y <= 300)
+          {
+             //alert(e.keyCode); //haut
+             if(e.keyCode == 38)
+             {
+               depla_haut = true;
+               depla_bas = false;
+               depla_droite = false;
+               depla_gauche = false;
+             }
+             if(e.keyCode == 40) //bas
+             {
+               depla_bas = true;
+               depla_haut = false;
+               depla_gauche = false;
+               depla_droite = false;
+             }
+             if(e.keyCode == 37) //gauche
+             {
+               depla_gauche = true;
+               depla_droite = false;
+               depla_haut = false;
+               depla_bas = false;
+             }
+             if(e.keyCode == 39) //droite
+             {
+               depla_droite = true;
+               depla_gauche = false;
+               depla_haut = false;
+               depla_bas = false;
+             }
+          }
+       }
+     
+
+	function refreshGame() {
+
+        if(player.y == squareY && player.x == squareX)
+          { 
+           squareX = getRandomMinMax(0,(ZONE_JEU_WIDTH-squareWidth)/10)*10;
+           squareY = getRandomMinMax(0,(ZONE_JEU_HEIGHT-squareHeight)/10)*10;
+           score = score + 1;
+           
+          }
+        
+        // On efface la zone
+	    context.clearRect(0, 0, ZONE_JEU_WIDTH, ZONE_JEU_HEIGHT);
+
+        if(depla_haut == true )
+     {
+        player.y = player.y - 10;
+     }
+       if(depla_bas == true)
+     { 
+       player.y = player.y + 10;
+     }
+       if(depla_gauche == true)
+     {
+       player.x = player.x - 10;
+     }
+       if(depla_droite == true)
+     {
+       player.x = player.x + 10;
+     }
+
+       if(player.y >= 300)
+     {
+       player.y = 0;
+     }
+       if(player.y < 0)
+     {
+       player.y = 300;
+     }
+       if(player.x < 0)
+     {
+       player.x = 400;
+     }
+       else if(player.x >= 400)
+     { 
+       player.x = 0;
+     }
+      
+
+        //squareX = getRandomMinMax(0,(ZONE_JEU_WIDTH-squareWidth)/10)*10;
+        //squareY = getRandomMinMax(0,(ZONE_JEU_HEIGHT-squareHeight)/10)*10;
+        
+	    
+        // Puis on réaffiche le nécessaire
+	    context.fillStyle = "red";
+		context.fillRect(squareX,squareY,squareWidth,squareHeight);
+        player.draw();
+       
+         document.getElementById("score").innerHTML = score;
+       
+   		
+	}
+     	function getRandomMinMax(min,max){   
+    		
+            return Math.floor(Math.random()*(max-min))+min;
+   
+   }
+    
+    	function Square(x,y,next){
+        
+        	this.x=x;
+            this.y=y;
+            this.next=next;
+            this.draw = function(){
+          		context.fillStyle = "green";
+        		context.fillRect(this.x,this.y,playerWidth,playerHeight);
+        }
+           this.move = function(X,Y){
+                this.next.move(this.x,this.y);
+                this.x=X;
+                this.y=Y;
+       }
+   }
+       function Snake(head){
+            this.head=head;
+            this.draw = function (){
+                var body = head;
+                while(body.next){
+                	body.draw();
+                	body = body.next;
+             	}  
+       		}
+            this.move = function(x,y){
+            //si x == squareX && y == squareY
+            //var newHead = new Carre (x,y)
+            // newHead.next = this.head
+            // this.head = newHead
+            // sinon
+              if(x == squareX && y == squareY){
+                 var newHead = new Square (x,y)
+                 newHead.next = this.head
+                 this.head = newHead
+              } 
+               else {
+               head.move(x,y);
+                    }
+           }
+       }
+   
+    
+</script>
+
+<h1>Snake</h1>
+<div id="conteneur">
+	<canvas id="canvasElem" width="400" height="300">
+		Votre navigateur ne supporte pas la fonctionnalité Canvas.
+	</canvas>
+     <p id="score"></p>
+</div>
