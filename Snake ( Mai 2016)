@@ -1,0 +1,233 @@
+<style type="text/css">
+	body {background: #000;}
+	#conteneur {width: 400px;height: 300px;border: 1px solid #333;
+    			margin: 0 auto;background: #FFF;text-align: center;}
+	h1 {text-align: center;font-variant: small-caps;color: #FFF;}
+	p {text-align: center;font-variant: small-caps;color: #FFF;}
+</style>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+	// Constantes du jeu
+
+	// Largeur du jeu
+	var ZONE_JEU_WIDTH = 400;
+	// Hauteur du jeu
+	var ZONE_JEU_HEIGHT = 300;
+
+	// Variables
+	var context;
+	var boucleJeu;
+    var squareWidth = 10;
+    var squareHeight = 10;
+    var playerWidth = 10;
+    var playerHeight = 10;
+	var squareX = getRandomMinMax(0,(ZONE_JEU_WIDTH-squareWidth)/10)*10;
+    var squareY = getRandomMinMax(0,(ZONE_JEU_HEIGHT-squareHeight)/10)*10;
+    var score = 0;
+    var depla_gauche = false;
+    var depla_droite = true;
+    var depla_haut = false;
+    var depla_bas = false;
+    var player = new Square(ZONE_JEU_WIDTH/2,ZONE_JEU_HEIGHT/2);
+    var snake = new Snake(player);
+   
+    
+	window.addEventListener('load', function () {
+	    // On récupère l'objet canvas pour dessiner dedans
+	    context = document.getElementById('canvasElem').getContext('2d');
+
+	    // Boucle de rafraichissement du contexte 2D
+	    boucleJeu = setInterval(refreshGame, 200
+        );
+        window.document.onkeydown = deplacement;
+	}, false);
+    
+    function deplacement(e) {
+    	if(player.y >= 0 & player.y <= 300)
+          {
+             //alert(e.keyCode); //haut
+             if(e.keyCode == 38)
+             {
+               depla_haut = true;
+               depla_bas = false;
+               depla_droite = false;
+               depla_gauche = false;
+             }
+             if(e.keyCode == 40) //bas
+             {
+               depla_bas = true;
+               depla_haut = false;
+               depla_gauche = false;
+               depla_droite = false;
+             }
+             if(e.keyCode == 37) //gauche
+             {
+               depla_gauche = true;
+               depla_droite = false;
+               depla_haut = false;
+               depla_bas = false;
+             }
+             if(e.keyCode == 39) //droite
+             {
+               depla_droite = true;
+               depla_gauche = false;
+               depla_haut = false;
+               depla_bas = false;
+             }
+          }
+       }
+     
+
+	function refreshGame() {
+        
+        // On efface la zone
+	    context.clearRect(0, 0, ZONE_JEU_WIDTH, ZONE_JEU_HEIGHT);
+
+          
+        if(depla_haut == true )
+     {
+        snake.move(snake.head.x,snake.head.y - 10);
+     }
+       if(depla_bas == true)
+     { 
+       snake.move(snake.head.x,snake.head.y + 10);
+     }
+       if(depla_gauche == true)
+     {
+       snake.move(snake.head.x - 10,snake.head.y);
+     }
+       if(depla_droite == true)
+     {
+       snake.move(snake.head.x + 10,snake.head.y);
+     }
+
+       if(snake.head.y >= 300)
+     {
+       snake.head.y = 0;
+     }
+       if(snake.head.y < 0)
+     {
+       snake.head.y = 300;
+     }
+       if(snake.head.x < 0)
+     {
+       snake.head.x = 400;
+     }
+       else if(snake.head.x >= 400)
+     { 
+       snake.head.x = 0;
+     }
+     
+
+               
+        context.fillStyle = "red";
+		context.fillRect(squareX,squareY,squareWidth,squareHeight);
+       
+        snake.draw();
+        
+        document.getElementById("score").innerHTML = score;
+       
+   		
+	}
+     	function getRandomMinMax(min,max){   
+    		
+            return Math.floor(Math.random()*(max-min))+min;
+   
+   }
+    
+    	function Square(x,y,next){
+        
+        	this.x=x;
+            this.y=y;
+            this.next=next;
+            
+            this.draw = function(){
+          		context.fillStyle = "green";
+        		context.fillRect(this.x,this.y,playerWidth,playerHeight);
+        	};
+        
+           this.move = function(X,Y)
+           {
+           
+                if(this.next){
+                	this.next.move(this.x,this.y);
+                }
+                
+				this.x=X;
+                this.y=Y;
+
+       		}
+  	 }
+   
+   
+       function Snake(head)
+       {
+            this.head=head;
+            
+            this.draw = function ()
+            {
+                var square = this.head;
+                
+          		context.fillStyle = "green";
+        		context.fillRect(square.x,square.y,playerWidth,playerHeight);
+                
+        		//document.getElementById("debug").innerHTML = "head" + square.x + " " + square.y;
+        		//document.getElementById("debug2").innerHTML = "body next" + this.head.next.x + " " + this.head.next.y;
+        
+                while(square.next)
+                {
+                	square = square.next;
+                	square.draw();
+             	}  
+       		};
+            this.contains =function(X,Y){
+               var body = this.head
+               while ( body.next){
+                   body = body.next;
+                   if(body.x == X && body.y == Y){
+                      return true;
+              		}
+              }
+              return false;
+           };
+               
+            
+            this.move = function(x,y)
+            {
+               if(this.contains(x,y)){
+					alert("Tu as perdu !");
+                    clearInterval(boucleJeu);
+      			  console.log("perdu")
+               }
+                if(x == squareX && y == squareY)
+             	{
+                	var newHead = new Square(x,y);
+	                newHead.next = this.head;
+    	            this.head = newHead;
+      		           
+					squareX = getRandomMinMax(0,(ZONE_JEU_WIDTH-squareWidth)/10)*10;
+     	  		   	squareY = getRandomMinMax(0,(ZONE_JEU_HEIGHT-squareHeight)/10)*10;
+     			    score = score + 1;
+          
+         	    } 
+				else 
+				{
+               		this.head.move(x,y);
+				}
+			}
+           
+                     
+       }
+   
+    
+</script>
+
+<h1>Snake</h1>
+<div id="conteneur">
+	<canvas id="canvasElem" width="400" height="300">
+		Votre navigateur ne supporte pas la fonctionnalité Canvas.
+	</canvas>
+     <p id="score"></p>
+     <p id="debug"></p>
+     <p id="debug2"></p>
+</div>
