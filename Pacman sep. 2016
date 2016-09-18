@@ -1,0 +1,117 @@
+function preload() {
+
+    game.load.baseURL = 'http://examples.phaser.io/assets/sprites/saw.png';
+    game.load.crossOrigin = 'anonymous';
+
+    game.load.image('phaser', 'http://examples.phaser.io/assets/sprites/saw.png');
+
+}
+   
+    var upKey;
+    var downKey;
+    var leftKey;
+    var rightKey;
+    
+    var upSprite;
+    var downSprite;
+    var leftSprite;
+    var rightSprite;
+
+    var sprite;
+    
+    var speed = 2;
+    
+    var Width = window.innerWidth;
+    var Height = window.innerHeight;
+    
+function create() {
+
+     sprite = game.add.sprite(10, 10, 'phaser');
+        sprite.scale.x = 0.3;
+        sprite.scale.y = 0.3;
+    
+    upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+}
+function update() {
+
+             //alert(e.keyCode); //haut
+             if(upKey.isDown)
+             {
+               upSprite = true;
+               downSprite = false;
+               rightSprite = false;
+               leftSprite = false;
+             }
+             if(downKey.isDown)//bas
+             {
+               upSprite = false;
+               downSprite = true;
+               rightSprite = false;
+               leftSprite = false;
+             }
+             if(leftKey.isDown) //gauche
+             {
+               upSprite = false;
+               downSprite = false;
+               rightSprite = false;
+               leftSprite = true;
+             }
+             if(rightKey.isDown) //droite
+             {
+               upSprite = false;
+               downSprite = false;
+               rightSprite = true;
+               leftSprite = false;
+             }
+        
+        
+            if(rightSprite == true)
+            { 
+                sprite.x+=speed;
+            }
+            if(leftSprite == true)
+            {
+                sprite.x-=speed;
+            }
+            if(upSprite == true)
+            {
+                sprite.y-=speed;
+            } 
+            if(downSprite == true)
+            {
+                sprite.y+=speed;
+            }
+            
+        checklimits();
+        rotateSaw();
+            
+    
+}
+
+function checklimits()
+{
+    
+            if(sprite.x<0)
+            {
+                sprite.x = 0;
+            }
+            else if(sprite.x>Width-sprite.width)
+            {
+                sprite.x = Width-sprite.width;
+            }
+            if(sprite.y<0)
+            {
+                sprite.y = 0;
+            }
+            else if(sprite.y>Height-sprite.height)
+            {
+                sprite.y = Height-sprite.height;
+            }
+}
+function rotateSaw()
+{
+    sprite.rotation += 1; 
+}
