@@ -1,0 +1,92 @@
+function preload() {
+
+    game.load.baseURL = 'http://examples.phaser.io/assets/';
+    game.load.crossOrigin = 'anonymous';
+
+    game.load.image('phaser', 'sprites/phaser-dude.png');
+    game.load.image('orb', 'sprites/orb-red.png');
+
+}
+
+
+
+
+
+
+var sprite;
+var arrows;
+var orb;
+var score = 0;
+
+function create() {
+
+    game.stage.backgroundColor = "#D1B606";
+
+
+    game.physics.startSystem(Phaser.Physics.Arcade);
+    game.physics.arcade.gravity.y = 700;
+    sprite = game.add.sprite(400, 300, 'phaser');
+    game.physics.arcade.enable(sprite);
+    sprite.body.collideWorldBounds = true;
+    arrows = game.input.keyboard.createCursorKeys();
+
+    orb = game.add.sprite(600, 180, 'orb' );
+    game.physics.arcade.enable(orb);
+    orb.body.collideWorldBounds = true; 
+    orb.body.allowGravity = false;
+    orb.anchor.setTo(0.5,0.5)
+    
+    scoreText = game.add.text (20,100,"score: "+score,{Fill:"#BBACAC", Font:"16px Roboto", align:"center"   });
+    
+
+}
+
+function miam (a,b){
+
+    //console.log("miam")
+    var newX = game.rnd.integerInRange(0,800);
+    var newY = game.rnd.integerInRange(0,600);
+    b.reset(newX, newY);
+    score = score+1
+    scoreText.text = "score:"+score;
+}
+
+
+
+
+
+
+var speed = 200
+var jump = -400
+
+function update() {
+
+    animatedOrb(orb,50);
+    checkKeys()
+    game.physics.arcade.overlap(sprite, orb, miam, null, this);
+}
+
+function animatedOrb(myOrb , speedOrb){
+    myOrb.body.angularVelocity = speedOrb;
+}
+
+function checkKeys(){
+    if(arrows.left.isDown){
+        sprite.body.velocity.x = -speed;
+}  
+    if(arrows.right.isDown){
+         sprite.body.velocity.x = speed;
+}  
+    if(arrows.up.downDuration(50)){
+        sprite.body.velocity.y = jump;
+}  
+   
+}
+
+
+
+
+function render() {
+    //game.debug.body(orb);
+    //game.debug.body(sprite)
+}
