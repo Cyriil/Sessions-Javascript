@@ -1,0 +1,90 @@
+
+  function joueur(){
+      this.nom = 'joseph la gosette';
+      this.nombre_de_pieces = 100;
+      this.afficher = function(){
+          var resultat = 'bonjour '+this.nom+', vous avez '+this.nombre_de_pieces+" pièces d'or";
+      return resultat;
+      }
+          this.getNom =function(){
+               return nom;
+                                 }
+          this.setNom = function(nouveau){
+               nom = nouveau;
+                                         }
+     
+
+                    }
+
+var joseph_la_gosette = new joueur();
+
+    function Jeu(){
+        this.joueurs = [];
+      this.créerJoueur = function(){
+             var j1 = new joueur();
+             var j2 = new joueur();
+             joueurs.push(j1)
+             joueurs.push(j2)
+             this.joueurs[0].nom = 'joseph la gosette';
+             this.joueurs[1].nom = 'le ptit Jhonny qui aime les kikis';
+                                 }
+                  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//joseph_la_gosette.nombre_de_pieces =joseph_la_gosette.nombre_de_pieces + 1;
+//console.log(afficher(joseph_la_gosette));
+
+
+
+
+var j = new joueur();
+console.log(j.afficher());
+//console.log(j.nombre_de_pieces);
+j.setNom ('Le ptit Jhonny aime les kikis');
+console.log(j.getNom());
+
+
+
+
+
+
+
+//console.log('bonjour '+joseph_la_gosette.nom+', vous avez '+joseph_la_gosette.nombre_de_pieces+" pièces d'or")
+/* il y a deux moyen d'appeler la fonction ; 1) joseph_la_gosette.nom
+                                             2) joseph_la_gosette['nom']*/
+
+
