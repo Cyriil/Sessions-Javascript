@@ -12,8 +12,6 @@
           this.setNom = function(nouveau){
                nom = nouveau;
                                          }
-     
-
                     }
 
 var joseph_la_gosette = new joueur();
@@ -26,12 +24,23 @@ var joseph_la_gosette = new joueur();
              joueurs.push(j1)
              joueurs.push(j2)
              this.joueurs[0].nom = 'joseph la gosette';
-             this.joueurs[1].nom = 'le ptit Jhonny qui aime les kikis';
-                                 }
+             this.joueurs[1].nom = 'le ptit Jhonny qui aime les kikis';      
+                                   }
+      this.ajouterJoueur = function(j){
+             this.joueurs.push(j);
+                                      }
+      this.afficherJoueurs = function(){
+             var indice = 0;
+             var longueur = this.joueurs.length;
+             for(indice;indice<longueur;indice++){
+                 this.joueurs[indice].afficher();
+                                                 }
+                                       }
                   }
 
-
-
+var je_sais_pas_quel_nom_lui_donner = new Jeu();
+je_sais_pas_quel_nom_lui_donner.afficherJoueurs();
+console.log(Jeu.afficherJoueurs());
 
 
 
